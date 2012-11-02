@@ -50,7 +50,7 @@ request(Method, Type, Url, Expect, Headers) ->
 request(Method, Type, Url, Expect, Headers, Body) ->
     Headers1 = [{"Accept", get_accesstype(Type)++", */*;q=0.9"} | Headers],
     Headers2 = [{"Content-Type", get_ctype(Type)} | Headers1],
-    Response = parse_response(lhttpc:request(Url, Method, Headers2, Body ,
+    Response = parse_response(lhttpc:request(Url, Method, Headers2, encode_body(Type, Body) ,
                                             infinity, [])),
     case Response of
         {ok, Status, H, B} ->
@@ -111,11 +111,11 @@ path_fix({[], T}, Acc) ->
 path_fix({H, T}, Acc) ->
     path_fix(mochiweb_util:path_split(T), [H|Acc]).
 
-get_request(Url, _, Headers, []) ->
-    {Url, Headers};
-get_request(Url, Type, Headers, Body) ->
-    SendBody = encode_body(Type, Body),
-    {Url, Headers, get_ctype(Type), SendBody}.
+%% get_request(Url, _, Headers, []) ->
+%%     {Url, Headers};
+%% get_request(Url, Type, Headers, Body) ->
+%%     SendBody = encode_body(Type, Body),
+%%     {Url, Headers, get_ctype(Type), SendBody}.
 
 parse_response({ok, {{_, Status, _}, Headers, Body}}) ->
     Type = proplists:get_value("content-type", Headers, ?DEFAULT_CTYPE),
