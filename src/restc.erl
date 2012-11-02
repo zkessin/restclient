@@ -51,7 +51,7 @@ request(Method, Type, Url, Expect, Headers, Body) ->
     Headers1 = [{"Accept", get_accesstype(Type)++", */*;q=0.9"} | Headers],
     Headers2 = [{"Content-Type", get_ctype(Type)} | Headers1],
     Response = parse_response(lhttpc:request(Url, Method, Headers2, Body ,
-                                            infinity, [{body_format, binary}])),
+                                            infinity, [])),
     case Response of
         {ok, Status, H, B} ->
             case check_expect(Status, Expect) of
