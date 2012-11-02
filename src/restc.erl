@@ -117,11 +117,11 @@ path_fix({H, T}, Acc) ->
 %%     SendBody = encode_body(Type, Body),
 %%     {Url, Headers, get_ctype(Type), SendBody}.
 
-parse_response({ok, {{_, Status, _}, Headers, Body}}) ->
+parse_response({ok, {{StatusCode, _}, Headers, Body}}) ->
     Type = proplists:get_value("content-type", Headers, ?DEFAULT_CTYPE),
     [{CType, 1.0} | _] = mochiweb_util:parse_qvalues(Type),
     Body2 = parse_body(CType, Body),
-    {ok, Status, Headers, Body2};
+    {ok, StatusCode, Headers, Body2};
 parse_response({error, Type}) ->
     {error, Type}.
 
