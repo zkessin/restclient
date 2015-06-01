@@ -111,7 +111,7 @@ check_expect(Status, Expect) ->
     lists:member(Status, Expect).
 
 encode_body(json, Body) ->
-    jsx:to_json(Body);
+    jsx:encode(Body);
 encode_body(percent, Body) ->
     mochiweb_util:urlencode(Body);
 encode_body(xml, Body) ->
@@ -158,10 +158,9 @@ parse_response({ok, {{_, Status, _}, Headers, Body}}) ->
 parse_response({error, Type}) ->
     {error, Type}.
 
-parse_body([], Body)                 -> Body;
 parse_body(_, [])                    -> [];
 parse_body(_, <<>>)                  -> [];
-parse_body("application/json", Body) -> jsx:to_term(Body);
+parse_body("application/json", Body) -> jsx:decode(Body);
 parse_body("application/xml", Body)  ->
     {ok, Data, _} = erlsom:simple_form(binary_to_list(Body)),
     Data;
